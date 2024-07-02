@@ -1,3 +1,6 @@
+import collections
+collections.Callable = collections.abc.Callable
+
 import datetime
 
 import six
