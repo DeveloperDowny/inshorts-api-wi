@@ -1,0 +1,370 @@
+openapi: 3.0.0
+info:
+  title: InShorts API
+  description: "API for InShorts-like platform enabling users to browse through various\
+    \ shorts (news, articles, posts, etc.)"
+  version: 1.0.0
+servers:
+- url: https://api.inshorts.com/v1
+  description: Production server
+- url: https://virtserver.swaggerhub.com/VEDANTPANCHAL12345/InShorts/1.0.0
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: auth
+  description: Authentication operations
+- name: shorts
+  description: Operations related to shorts
+paths:
+  /api/signup:
+    post:
+      tags:
+      - auth
+      summary: Register a new user
+      operationId: api_signup_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+        required: true
+      responses:
+        "200":
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignupResponse'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-openapi-router-controller: swagger_server.controllers.auth_controller
+  /api/login:
+    post:
+      tags:
+      - auth
+      summary: Login user
+      operationId: api_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        "200":
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-openapi-router-controller: swagger_server.controllers.auth_controller
+  /api/shorts/create:
+    post:
+      tags:
+      - shorts
+      summary: Add a new short
+      operationId: api_shorts_create_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateShortRequest'
+        required: true
+      responses:
+        "200":
+          description: Short created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateShortResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      x-openapi-router-controller: swagger_server.controllers.shorts_controller
+  /api/shorts/feed:
+    get:
+      tags:
+      - shorts
+      summary: Get shorts feed
+      operationId: api_shorts_feed_get
+      responses:
+        "200":
+          description: Successful retrieval of shorts feed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Short'
+                x-content-type: application/json
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-openapi-router-controller: swagger_server.controllers.shorts_controller
+  /api/shorts/filter:
+    get:
+      tags:
+      - shorts
+      summary: Get filtered shorts feed
+      operationId: api_shorts_filter_get
+      parameters:
+      - name: filter
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/FilterParams'
+      - name: search
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/SearchParams'
+      responses:
+        "200":
+          description: Successful retrieval of filtered shorts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FilteredShort'
+                x-content-type: application/json
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - BearerAuth: []
+      x-openapi-router-controller: swagger_server.controllers.shorts_controller
+components:
+  schemas:
+    SignupRequest:
+      required:
+      - email
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+        email:
+          type: string
+          format: email
+    SignupResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        status_code:
+          type: integer
+        user_id:
+          type: string
+      example:
+        status_code: 0
+        user_id: user_id
+        status: status
+    LoginRequest:
+      required:
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+    LoginResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        status_code:
+          type: integer
+        user_id:
+          type: string
+        access_token:
+          type: string
+      example:
+        access_token: access_token
+        status_code: 0
+        user_id: user_id
+        status: status
+    CreateShortRequest:
+      required:
+      - author
+      - category
+      - content
+      - publish_date
+      - title
+      type: object
+      properties:
+        category:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+        publish_date:
+          type: string
+          format: date-time
+        content:
+          type: string
+        actual_content_link:
+          type: string
+          format: uri
+        image:
+          type: string
+        votes:
+          $ref: '#/components/schemas/Votes'
+    CreateShortResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        short_id:
+          type: string
+        status_code:
+          type: integer
+      example:
+        status_code: 0
+        short_id: short_id
+        message: message
+    Short:
+      type: object
+      properties:
+        short_id:
+          type: string
+        category:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+        publish_date:
+          type: string
+          format: date-time
+        content:
+          type: string
+        actual_content_link:
+          type: string
+          format: uri
+        image:
+          type: string
+        votes:
+          $ref: '#/components/schemas/Votes'
+      example:
+        actual_content_link: http://example.com/aeiou
+        image: image
+        author: author
+        votes:
+          downvote: 6
+          upvote: 0
+        short_id: short_id
+        category: category
+        title: title
+        publish_date: 2000-01-23T04:56:07.000+00:00
+        content: content
+    FilteredShort:
+      allOf:
+      - $ref: '#/components/schemas/Short'
+      - type: object
+        properties:
+          contains_title:
+            type: boolean
+          contains_content:
+            type: boolean
+          contains_author:
+            type: boolean
+    Votes:
+      type: object
+      properties:
+        upvote:
+          type: integer
+        downvote:
+          type: integer
+      example:
+        downvote: 6
+        upvote: 0
+    FilterParams:
+      type: object
+      properties:
+        category:
+          type: string
+        publish_date:
+          type: string
+          format: date-time
+        upvote:
+          type: integer
+    SearchParams:
+      type: object
+      properties:
+        title:
+          type: string
+        keyword:
+          type: string
+        author:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        status_code:
+          type: integer
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: X-API-Key
+      in: header
+      x-apikeyInfoFunc: swagger_server.controllers.authorization_controller.check_ApiKeyAuth
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      x-bearerInfoFunc: swagger_server.controllers.authorization_controller.check_BearerAuth
+
