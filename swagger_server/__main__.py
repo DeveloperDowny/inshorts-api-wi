@@ -20,8 +20,13 @@ def main():
     database_name = os.getenv('DB_NAME', 'inshorts')
 
 
-    app.app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://{username}:{password}@{hostname}/{database_name}' # MySQL
-    # app.app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{username}:{password}@{hostname}:{port}/{database_name}' # PostgreSQL
+    # app.app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+mysqlconnector://{username}:{password}@{hostname}/{database_name}' # MySQL
+    
+    
+    
+    # For deploying on Cloud Run as no free MySQL instance is easily availabe.
+    # Got a free instance of PostgreSQL on Supabase.
+    app.app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{username}:{password}@{hostname}:{port}/{database_name}' # PostgreSQL
 
     # SQLite
     # app.app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///library_management.db'
