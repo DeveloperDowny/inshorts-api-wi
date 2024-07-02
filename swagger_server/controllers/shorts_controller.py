@@ -50,7 +50,9 @@ def api_shorts_feed_get():  # noqa: E501
 
     :rtype: List[Short]
     """
-    return 'do some magic!'
+    # return 'do some magic!'
+    shorts = ShortService.get_feed()
+    return [Short(short_id=str(short.id), category=short.category, title=short.title, author=short.author, publish_date=short.publish_date, content=short.content, actual_content_link=short.actual_content_link, image=short.image, votes={"upvote": short.upvotes, "downvote": short.downvotes}) for short in shorts], 200
 
 
 def api_shorts_filter_get(filter=None, search=None):  # noqa: E501

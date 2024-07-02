@@ -34,7 +34,7 @@ class ShortService:
     @staticmethod
     def get_feed():
         shorts = Short.query.order_by(Short.publish_date.desc(), Short.upvotes.desc()).all()
-        return jsonify([short.to_dict() for short in shorts]), 200
+        return shorts
 
     @staticmethod
     def filter_shorts(filter_params,search_params):  
