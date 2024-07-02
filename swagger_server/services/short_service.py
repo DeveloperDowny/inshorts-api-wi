@@ -1,5 +1,4 @@
 from flask import jsonify, request
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import timedelta
 from swagger_server.database.database_models import db, Short, User
 from datetime import datetime
@@ -38,10 +37,7 @@ class ShortService:
         return jsonify([short.to_dict() for short in shorts]), 200
 
     @staticmethod
-    @jwt_required
-    def filter_shorts():
-        filter_params = request.args.get('filter', {})
-        search_params = request.args.get('search', {})
+    def filter_shorts(filter_params,search_params):  
 
         query = Short.query
 
@@ -63,9 +59,5 @@ class ShortService:
         shorts = query.all()
         
         if not shorts:
-            return jsonify({
-                "status": "No short matches your search criteria",
-                "status_code": 400
-            }), 400
-
-        return jsonify([short.to_dict(search_params) for short in shorts]), 200
+            return None
+        return shorts

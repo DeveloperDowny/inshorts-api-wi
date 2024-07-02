@@ -65,8 +65,18 @@ def api_shorts_filter_get(filter=None, search=None):  # noqa: E501
 
     :rtype: List[FilteredShort]
     """
-    if connexion.request.is_json:
-        filter = FilterParams.from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        search = SearchParams.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    # if connexion.request.is_json:
+    #     filter = FilterParams.from_dict(connexion.request.get_json())  # noqa: E501
+    # if connexion.request.is_json:
+    #     search = SearchParams.from_dict(connexion.request.get_json())  # noqa: E501
+    # return 'do some magic!'
+    filter_params = connexion.request.args.get('filter', {})
+    search_params = connexion.request.args.get('search', {})
+    
+    try:
+        shorts = ShortService.filter_shorts(filter_params, search_params)
+        if not shorts:
+            return ErrorResponse(status="No short matches your search criteria", status_code=400), 400
+        return [FilteredShort(short_id=str(short.id), title=short.title, content=short.content, author=short.author, contains_title=filter_params.get('contains_title', False), contains_content=filter_params.get('contains_content', False), contains_author=filter_params.get('contains_author', False)) for short in shorts], 200
+    except ValueError as e:
+        return ErrorResponse(status=str(e), status_code=400), 400
