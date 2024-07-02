@@ -21,4 +21,6 @@ class Short(db.Model):
     image = db.Column(db.String(500))
     upvotes = db.Column(db.Integer, default=0)
     downvotes = db.Column(db.Integer, default=0)
+    
+    # votes = db.Column(db.JSON, default={"upvote": 0, "downvote": 0})
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

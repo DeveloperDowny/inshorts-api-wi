@@ -9,8 +9,11 @@ from swagger_server.models.filtered_short import FilteredShort  # noqa: E501
 from swagger_server.models.search_params import SearchParams  # noqa: E501
 from swagger_server.models.short import Short  # noqa: E501
 from swagger_server import util
+from swagger_server.services.short_service import ShortService
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
+@jwt_required()
 def api_shorts_create_post(body):  # noqa: E501
     """Add a new short
 
@@ -21,9 +24,22 @@ def api_shorts_create_post(body):  # noqa: E501
 
     :rtype: CreateShortResponse
     """
-    if connexion.request.is_json:
-        body = CreateShortRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    # if connexion.request.is_json:
+    #     body = CreateShortRequest.from_dict(connexion.request.get_json())  # noqa: E501
+    # return 'do some magic!'
+    if not connexion.request.is_json:
+        return ErrorResponse(status="Invalid request format", status_code=400), 400
+    
+    body = CreateShortRequest.from_dict(connexion.request.get_json())
+    try:
+        user_id = get_jwt_identity()
+
+        short = ShortService.create_short(body, user_id)
+        if not short:
+            return ErrorResponse(status="Unauthorized", status_code=401), 401
+        return CreateShortResponse(message="Short added successfully", short_id=str(short.id), status_code=200), 200
+    except ValueError as e:
+        return ErrorResponse(status=str(e), status_code=400), 400
 
 
 def api_shorts_feed_get():  # noqa: E501

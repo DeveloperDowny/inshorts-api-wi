@@ -1,31 +1,32 @@
 openapi: 3.0.0
 info:
   title: InShorts API
-  description: "API for InShorts-like platform enabling users to browse through various\
+  description:
+    "API for InShorts-like platform enabling users to browse through various\
     \ shorts (news, articles, posts, etc.)"
   version: 1.0.0
 servers:
-- url: https://api.inshorts.com/v1
-  description: Production server
-- url: https://virtserver.swaggerhub.com/VEDANTPANCHAL12345/InShorts/1.0.0
-  description: SwaggerHub API Auto Mocking
+  - url: https://api.inshorts.com/v1
+    description: Production server
+  - url: https://virtserver.swaggerhub.com/VEDANTPANCHAL12345/InShorts/1.0.0
+    description: SwaggerHub API Auto Mocking
 tags:
-- name: auth
-  description: Authentication operations
-- name: shorts
-  description: Operations related to shorts
+  - name: auth
+    description: Authentication operations
+  - name: shorts
+    description: Operations related to shorts
 paths:
   /api/signup:
     post:
       tags:
-      - auth
+        - auth
       summary: Register a new user
       operationId: api_signup_post
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SignupRequest'
+              $ref: "#/components/schemas/SignupRequest"
         required: true
       responses:
         "200":
@@ -33,25 +34,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SignupResponse'
+                $ref: "#/components/schemas/SignupResponse"
         "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       x-openapi-router-controller: swagger_server.controllers.auth_controller
   /api/login:
     post:
       tags:
-      - auth
+        - auth
       summary: Login user
       operationId: api_login_post
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: "#/components/schemas/LoginRequest"
         required: true
       responses:
         "200":
@@ -59,25 +60,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
+                $ref: "#/components/schemas/LoginResponse"
         "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       x-openapi-router-controller: swagger_server.controllers.auth_controller
   /api/shorts/create:
     post:
       tags:
-      - shorts
+        - shorts
       summary: Add a new short
       operationId: api_shorts_create_post
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateShortRequest'
+              $ref: "#/components/schemas/CreateShortRequest"
         required: true
       responses:
         "200":
@@ -85,20 +86,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateShortResponse'
+                $ref: "#/components/schemas/CreateShortResponse"
         "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security:
-      - ApiKeyAuth: []
+        - BearerAuth: []
+        - ApiKeyAuth: []
       x-openapi-router-controller: swagger_server.controllers.shorts_controller
   /api/shorts/feed:
     get:
       tags:
-      - shorts
+        - shorts
       summary: Get shorts feed
       operationId: api_shorts_feed_get
       responses:
@@ -109,36 +111,36 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Short'
+                  $ref: "#/components/schemas/Short"
                 x-content-type: application/json
         "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       x-openapi-router-controller: swagger_server.controllers.shorts_controller
   /api/shorts/filter:
     get:
       tags:
-      - shorts
+        - shorts
       summary: Get filtered shorts feed
       operationId: api_shorts_filter_get
       parameters:
-      - name: filter
-        in: query
-        required: false
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/FilterParams'
-      - name: search
-        in: query
-        required: false
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/SearchParams'
+        - name: filter
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            $ref: "#/components/schemas/FilterParams"
+        - name: search
+          in: query
+          required: false
+          style: form
+          explode: true
+          schema:
+            $ref: "#/components/schemas/SearchParams"
       responses:
         "200":
           description: Successful retrieval of filtered shorts
@@ -147,30 +149,30 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/FilteredShort'
+                  $ref: "#/components/schemas/FilteredShort"
                 x-content-type: application/json
         "400":
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
         "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       x-openapi-router-controller: swagger_server.controllers.shorts_controller
 components:
   schemas:
     SignupRequest:
       required:
-      - email
-      - password
-      - username
+        - email
+        - password
+        - username
       type: object
       properties:
         username:
@@ -196,8 +198,8 @@ components:
         status: status
     LoginRequest:
       required:
-      - password
-      - username
+        - password
+        - username
       type: object
       properties:
         username:
@@ -223,11 +225,11 @@ components:
         status: status
     CreateShortRequest:
       required:
-      - author
-      - category
-      - content
-      - publish_date
-      - title
+        - author
+        - category
+        - content
+        - publish_date
+        - title
       type: object
       properties:
         category:
@@ -247,7 +249,7 @@ components:
         image:
           type: string
         votes:
-          $ref: '#/components/schemas/Votes'
+          $ref: "#/components/schemas/Votes"
     CreateShortResponse:
       type: object
       properties:
@@ -283,7 +285,7 @@ components:
         image:
           type: string
         votes:
-          $ref: '#/components/schemas/Votes'
+          $ref: "#/components/schemas/Votes"
       example:
         actual_content_link: http://example.com/aeiou
         image: image
@@ -298,15 +300,15 @@ components:
         content: content
     FilteredShort:
       allOf:
-      - $ref: '#/components/schemas/Short'
-      - type: object
-        properties:
-          contains_title:
-            type: boolean
-          contains_content:
-            type: boolean
-          contains_author:
-            type: boolean
+        - $ref: "#/components/schemas/Short"
+        - type: object
+          properties:
+            contains_title:
+              type: boolean
+            contains_content:
+              type: boolean
+            contains_author:
+              type: boolean
     Votes:
       type: object
       properties:
@@ -349,13 +351,13 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
     Unauthorized:
       description: Unauthorized
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
@@ -367,4 +369,3 @@ components:
       scheme: bearer
       bearerFormat: JWT
       x-bearerInfoFunc: swagger_server.controllers.authorization_controller.check_BearerAuth
-

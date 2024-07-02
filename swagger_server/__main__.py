@@ -40,9 +40,9 @@ def main():
 
 
     app.app.json_encoder = encoder.JSONEncoder
-    app.add_api('swagger.yaml', arguments={'title': 'Swagger Petstore'}, pythonic_params=True)
+    app.add_api('swagger.yaml', arguments={'title': 'InShorts API'}, pythonic_params=True)
     # app.run(port=os.getenv('PORT', 8080))
-    app.run(host='0.0.0.0', port=os.getenv('PORT', 8080))
+    app.run(host='0.0.0.0', port=os.getenv('PORT', 8080), debug=True)
 
 
 if __name__ == '__main__':
