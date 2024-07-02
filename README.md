@@ -2,6 +2,8 @@
 
 Try the API here: https://inshorts-api-ugdzgasx3a-uc.a.run.app/v1/ui/ (hosted on Google Cloud Run)
 
+(e.g. endpoint https://inshorts-api-ugdzgasx3a-uc.a.run.app/v1/api/shorts/feed)
+
 InShorts Sever Documentation - https://docs.google.com/document/d/1wrQ_6tHq2Ki8siFvD1XwwH9oV3ImHnVYQB3-BIlJ5q0/edit?usp=sharing \
 The above documentation highlights the steps taken while building, obstacles faced and resolution and screenshots of manual tests performed on the API. \
 This server is built with spec-first approach with Swagger and standards of OpenAPI initiative.
